@@ -11,10 +11,13 @@ export default function SearchMissingChild() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8000/search-child/${searchName}`);
+      // const response = await fetch(`http://localhost:8000/search-child/${searchName}`);
+      const response = await fetch(`http://localhost:5000/search-child/${searchName}`);
+
       const data = await response.json();
       setChildData(data);
       setChildImage(`data:image/png;base64,${data.img}`);
+      console.log('processing searching child');
     } catch (error) {
       console.error(error);
     }

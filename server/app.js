@@ -1,10 +1,17 @@
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const multer = require("multer");
+// const express = require('express');
+// const app = express();
+
+app.use(cors()); // Enable CORS for all origins
+
+// Your other middleware and routes
 
 var fs = require("fs");
 var path = require("path");

@@ -1,8 +1,9 @@
 const http = require('http');
 const app = require('./app');
-
+// const cors = require('cors');
 const normalizePort = val => {
   const port = parseInt(val, 10);
+  // app.use(cors({ origin: 'http://localhost:3000' })); // Allow requests from React app
 
   if (isNaN(port)) {
     return val;

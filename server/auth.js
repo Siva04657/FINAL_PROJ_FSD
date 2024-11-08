@@ -1,28 +1,35 @@
 const jwt = require("jsonwebtoken");
-
-module.exports = async (request,response,next) => {
+require("dotenv").config();
+module.exports = (request, response, next) => {
     try {
-        //get the token from the authorization header
-        const token = await request.headers.authorization.split(" ")[1];
+        // Check if the Authorization header is present
+        const authorizationHeader = request.headers.authorization;
+        if (!authorizationHeader) {
+            return response.status(401).json({
+                error: new Error("Authorization header missing!")
+            });
+        }
 
-        //check if the token matches the supposed origin
-        const decodedToken = await jwt.verify(
-            token,
-            "RANDOM-TOKEN"
-        );
+        // Extract the token from the Authorization header (Bearer <token>)
+        const token = authorizationHeader.split(" ")[1];
+        if (!token) {
+            return response.status(401).json({
+                error: new Error("Token missing!")
+            });
+        }
 
-        //retrieve the user details of the logged in user
-        const user = await decodedToken;
+        // Verify the token
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET || "RANDOM-TOKEN");
 
-        //pass the user down to the endpoints here
-        request.user = user;
+        // Attach the user data to the request object
+        request.user = decodedToken;
 
-        //pass down functionality to the endpoint
+        // Proceed to the next middleware or endpoint
         next();
-        
     } catch (error) {
-        response.status(401).json({
-            error:new Error ("Invalid request!"),
+        console.error("Authorization error:", error); // Log the error for debugging purposes
+        return response.status(401).json({
+            error: new Error("Invalid or expired token!")
         });
     }
-}
+};
